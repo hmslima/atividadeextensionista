@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="copyright" content="
+        MIT License
+
+        Copyright (c) Henrique Matheus da Silva Lima, Gabriella Silvério Santana
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the 'Software'), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+
+        " />
+    <title>Formulação de ração</title>
+
+    <!--------------------------------- ----------------------------------->
+    <!--------------------------- código CSS ------------------------------>
+    <!--------------------------------- ----------------------------------->
+    <style>
+        body {background-color: #F3DFC8;}
+        .container {width: 80%; margin: auto;}
+        th, td {
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+        th {
+            background-color: #581845;
+            color: #FFFFFF;
+            font-variant: small-caps;
+        }
+        td {
+            background-color: #DAF7A6;
+        }
+        caption {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 0.5em;
+        }
+        .informe {
+            margin-top: 2em;
+        }
+        .tabelasDeFormulas {
+            margin-top: 1em;
+        }
+        .tabelaDeFormula {
+            width: 100%;
+            table-layout: fixed;
+        }
+        .tabelaInicialmenteEscondida {display: none;}
+        .celulaInput{text-align: center;}
+        td.dias {text-align: center; background-color: #581825; color: #FFFFFF; font-weight: bold;}
+        .ingrediente {width: 12em; font-weight: bold; background-color: #581825; color: #FFFFFF;}
+        .celulaInvisivel {border: 0; background-color: transparent;}
+        .valoresIngredientes {
+            text-align: center;
+        }
+
+        @media screen and (max-width: 1200px) {
+            .container {width: 90%;}
+        }
+        @media screen and (max-width: 800px) {
+            .container {width: 95%;}
+            .ingrediente {width: auto;}
+        }
+    </style>
+
+    <!--------------------------------- ----------------------------------->
+    <!------------------------- código JavaScript ------------------------->
+    <!--------------------------------- ----------------------------------->
+    <script type="text/javascript">
+
+        function ocultarTodasAsTabelas() {
+            document.getElementById("cr").style.display = "none";
+            document.getElementById("cl").style.display = "none";
+            document.getElementById("pl").style.display = "none";
+            document.getElementById("ps").style.display = "none";
+            limparValores ();
+            limparValoresGerados ();
+        }
+
+        function selecionarTabela () {
+            var seletorDeTabelas = document.getElementById("tabelas_f");
+            ocultarTodasAsTabelas();
+
+            if (seletorDeTabelas.value == "corte_longo") {
+                document.getElementById("cl").style.display = "table";
+            }
+            else if (seletorDeTabelas.value == "poedeiras_leves") {
+                document.getElementById("pl").style.display = "table";
+            }
+            else if (seletorDeTabelas.value == "poedeiras_semipesadas") {
+                document.getElementById("ps").style.display = "table";
+            }
+            else {
+                document.getElementById("cr").style.display = "table";
+            }
+
+        }
+
+        function limparValores () {
+            document.getElementById("cr_milho_inicial_i").value = "";
+            document.getElementById("cr_milho_crescimento_i").value = "";
+            document.getElementById("cr_milho_terminacao_i").value = "";
+
+            document.getElementById("cl_milho_inicial_i").value = "";
+            document.getElementById("cl_milho_crescimento_i").value = "";
+            document.getElementById("cl_milho_terminacao_i").value = "";
+
+            document.getElementById("pl_milho_inicial_i").value = "";
+            document.getElementById("pl_milho_cria_i").value = "";
+            document.getElementById("pl_milho_recria_i").value = "";
+            document.getElementById("pl_milho_postura1_i").value = "";
+            document.getElementById("pl_milho_postura2_i").value = "";
+
+            document.getElementById("ps_milho_inicial_i").value = "";
+            document.getElementById("ps_milho_cria_i").value = "";
+            document.getElementById("ps_milho_recria_i").value = "";
+            document.getElementById("ps_milho_postura1_i").value = "";
+            document.getElementById("ps_milho_postura2_i").value = "";
+        }
+
+        function limparValoresGerados () {
+            document.getElementById("cr_soja_inicial").innerHTML = "";
+            document.getElementById("cr_soja_crescimento").innerText = "";
+            document.getElementById("cr_soja_terminacao").innerText = "";
+            document.getElementById("cr_calcario_inicial").innerText = "";
+            document.getElementById("cr_calcario_crescimento").innerText = "";
+            document.getElementById("cr_calcario_terminacao").innerText = "";
+            document.getElementById("cr_fosfato_inicial").innerText = "";
+            document.getElementById("cr_fosfato_crescimento").innerText = "";
+            document.getElementById("cr_fosfato_terminacao").innerText = "";
+            document.getElementById("cr_sal_inicial").innerText = "";
+            document.getElementById("cr_sal_crescimento").innerText = "";
+            document.getElementById("cr_sal_terminacao").innerText = "";
+            document.getElementById("cr_dl_inicial").innerText = "";
+            document.getElementById("cr_dl_crescimento").innerText = "";
+            document.getElementById("cr_dl_terminacao").innerText = "";
+            document.getElementById("cr_sup_inicial").innerText = "";
+            document.getElementById("cr_sup_crescimento").innerText = "";
+            document.getElementById("cr_sup_terminacao").innerText = "";
+            document.getElementById("cr_oleo_inicial").innerText = "";
+            document.getElementById("cr_oleo_crescimento").innerText = "";
+            document.getElementById("cr_oleo_terminacao").innerText = "";
+            document.getElementById("cr_total_inicial").innerText = "";
+            document.getElementById("cr_total_crescimento").innerText = "";
+            document.getElementById("cr_total_terminacao").innerText = "";
+
+            document.getElementById("cl_soja_inicial").innerHTML = "";
+            document.getElementById("cl_soja_crescimento").innerText = "";
+            document.getElementById("cl_soja_terminacao").innerText = "";
+            document.getElementById("cl_calcario_inicial").innerText = "";
+            document.getElementById("cl_calcario_crescimento").innerText = "";
+            document.getElementById("cl_calcario_terminacao").innerText = "";
+            document.getElementById("cl_fosfato_inicial").innerText = "";
+            document.getElementById("cl_fosfato_crescimento").innerText = "";
+            document.getElementById("cl_fosfato_terminacao").innerText = "";
+            document.getElementById("cl_sal_inicial").innerText = "";
+            document.getElementById("cl_sal_crescimento").innerText = "";
+            document.getElementById("cl_sal_terminacao").innerText = "";
+            document.getElementById("cl_dl_inicial").innerText = "";
+            document.getElementById("cl_dl_crescimento").innerText = "";
+            document.getElementById("cl_dl_terminacao").innerText = "";
+            document.getElementById("cl_sup_inicial").innerText = "";
+            document.getElementById("cl_sup_crescimento").innerText = "";
+            document.getElementById("cl_sup_terminacao").innerText = "";
+            document.getElementById("cl_oleo_inicial").innerText = "";
+            document.getElementById("cl_oleo_crescimento").innerText = "";
+            document.getElementById("cl_oleo_terminacao").innerText = "";
+            document.getElementById("cl_total_inicial").innerText = "";
+            document.getElementById("cl_total_crescimento").innerText = "";
+            document.getElementById("cl_total_terminacao").innerText = "";
+
+            document.getElementById("pl_soja_inicial").innerHTML = "";
+            document.getElementById("pl_soja_cria").innerText = "";
+            document.getElementById("pl_soja_recria").innerText = "";
+            document.getElementById("pl_soja_postura1").innerText = "";
+            document.getElementById("pl_soja_postura2").innerText = "";
+            document.getElementById("pl_calcario_inicial").innerText = "";
+            document.getElementById("pl_calcario_cria").innerText = "";
+            document.getElementById("pl_calcario_recria").innerText = "";
+            document.getElementById("pl_calcario_postura1").innerText = "";
+            document.getElementById("pl_calcario_postura2").innerText = "";
+            document.getElementById("pl_fosfato_inicial").innerText = "";
+            document.getElementById("pl_fosfato_cria").innerText = "";
+            document.getElementById("pl_fosfato_recria").innerText = "";
+            document.getElementById("pl_fosfato_postura1").innerText = "";
+            document.getElementById("pl_fosfato_postura2").innerText = "";
+            document.getElementById("pl_sal_inicial").innerText = "";
+            document.getElementById("pl_sal_cria").innerText = "";
+            document.getElementById("pl_sal_recria").innerText = "";
+            document.getElementById("pl_sal_postura1").innerText = "";
+            document.getElementById("pl_sal_postura2").innerText = "";
+            document.getElementById("pl_dl_inicial").innerText = "";
+            document.getElementById("pl_dl_cria").innerText = "";
+            document.getElementById("pl_dl_recria").innerText = "";
+            document.getElementById("pl_dl_postura1").innerText = "";
+            document.getElementById("pl_dl_postura2").innerText = "";
+            document.getElementById("pl_sup_inicial").innerText = "";
+            document.getElementById("pl_sup_cria").innerText = "";
+            document.getElementById("pl_sup_recria").innerText = "";
+            document.getElementById("pl_sup_postura1").innerText = "";
+            document.getElementById("pl_sup_postura2").innerText = "";
+            document.getElementById("pl_oleo_inicial").innerText = "";
+            document.getElementById("pl_oleo_cria").innerText = "";
+            document.getElementById("pl_oleo_recria").innerText = "";
+            document.getElementById("pl_oleo_postura1").innerText = "";
+            document.getElementById("pl_oleo_postura2").innerText = "";
+            document.getElementById("pl_total_inicial").innerText = "";
+            document.getElementById("pl_total_cria").innerText = "";
+            document.getElementById("pl_total_recria").innerText = "";
+            document.getElementById("pl_total_postura1").innerText = "";
+            document.getElementById("pl_total_postura2").innerText = "";
+
+            document.getElementById("ps_soja_inicial").innerHTML = "";
+            document.getElementById("ps_soja_cria").innerText = "";
+            document.getElementById("ps_soja_recria").innerText = "";
+            document.getElementById("ps_soja_postura1").innerText = "";
+            document.getElementById("ps_soja_postura2").innerText = "";
+            document.getElementById("ps_calcario_inicial").innerText = "";
+            document.getElementById("ps_calcario_cria").innerText = "";
+            document.getElementById("ps_calcario_recria").innerText = "";
+            document.getElementById("ps_calcario_postura1").innerText = "";
+            document.getElementById("ps_calcario_postura2").innerText = "";
+            document.getElementById("ps_fosfato_inicial").innerText = "";
+            document.getElementById("ps_fosfato_cria").innerText = "";
+            document.getElementById("ps_fosfato_recria").innerText = "";
+            document.getElementById("ps_fosfato_postura1").innerText = "";
+            document.getElementById("ps_fosfato_postura2").innerText = "";
+            document.getElementById("ps_sal_inicial").innerText = "";
+            document.getElementById("ps_sal_cria").innerText = "";
+            document.getElementById("ps_sal_recria").innerText = "";
+            document.getElementById("ps_sal_postura1").innerText = "";
+            document.getElementById("ps_sal_postura2").innerText = "";
+            document.getElementById("ps_dl_inicial").innerText = "";
+            document.getElementById("ps_dl_cria").innerText = "";
+            document.getElementById("ps_dl_recria").innerText = "";
+            document.getElementById("ps_dl_postura1").innerText = "";
+            document.getElementById("ps_dl_postura2").innerText = "";
+            document.getElementById("ps_sup_inicial").innerText = "";
+            document.getElementById("ps_sup_cria").innerText = "";
+            document.getElementById("ps_sup_recria").innerText = "";
+            document.getElementById("ps_sup_postura1").innerText = "";
+            document.getElementById("ps_sup_postura2").innerText = "";
+            document.getElementById("ps_oleo_inicial").innerText = "";
+            document.getElementById("ps_oleo_cria").innerText = "";
+            document.getElementById("ps_oleo_recria").innerText = "";
+            document.getElementById("ps_oleo_postura1").innerText = "";
+            document.getElementById("ps_oleo_postura2").innerText = "";
+            document.getElementById("ps_total_inicial").innerText = "";
+            document.getElementById("ps_total_cria").innerText = "";
+            document.getElementById("ps_total_recria").innerText = "";
+            document.getElementById("ps_total_postura1").innerText = "";
+            document.getElementById("ps_total_postura2").innerText = "";
+        }
+
+        function calculoBruto(valorMilho, posicao) {
+            // Coleta todas as células
+            var cr_milho_inicial = document.getElementById("cr_milho_inicial_i");
+            var cr_milho_crescimento = document.getElementById("cr_milho_crescimento_i");
+            var cr_milho_terminacao = document.getElementById("cr_milho_terminacao_i");
+            var cr_soja_inicial = document.getElementById("cr_soja_inicial");
+            var cr_soja_crescimento = document.getElementById("cr_soja_crescimento");
+            var cr_soja_terminacao = document.getElementById("cr_soja_terminacao");
+            var cr_calcario_inicial = document.getElementById("cr_calcario_inicial");
+            var cr_calcario_crescimento = document.getElementById("cr_calcario_crescimento");
+            var cr_calcario_terminacao = document.getElementById("cr_calcario_terminacao");
+            var cr_fosfato_inicial = document.getElementById("cr_fosfato_inicial");
+            var cr_fosfato_crescimento = document.getElementById("cr_fosfato_crescimento");
+            var cr_fosfato_terminacao = document.getElementById("cr_fosfato_terminacao");
+            var cr_sal_inicial = document.getElementById("cr_sal_inicial");
+            var cr_sal_crescimento = document.getElementById("cr_sal_crescimento");
+            var cr_sal_terminacao = document.getElementById("cr_sal_terminacao");
+            var cr_dl_inicial = document.getElementById("cr_dl_inicial");
+            var cr_dl_crescimento = document.getElementById("cr_dl_crescimento");
+            var cr_dl_terminacao = document.getElementById("cr_dl_terminacao");
+            var cr_sup_inicial = document.getElementById("cr_sup_inicial");
+            var cr_sup_crescimento = document.getElementById("cr_sup_crescimento");
+            var cr_sup_terminacao = document.getElementById("cr_sup_terminacao");
+            var cr_oleo_inicial = document.getElementById("cr_oleo_inicial");
+            var cr_oleo_crescimento = document.getElementById("cr_oleo_crescimento");
+            var cr_oleo_terminacao = document.getElementById("cr_oleo_terminacao");
+            var cr_total_inicial = document.getElementById("cr_total_inicial");
+            var cr_total_crescimento = document.getElementById("cr_total_crescimento");
+            var cr_total_terminacao = document.getElementById("cr_total_terminacao");
+            
+            var cl_milho_inicial = document.getElementById("cl_milho_inicial_i");
+            var cl_milho_crescimento = document.getElementById("cl_milho_crescimento_i");
+            var cl_milho_terminacao = document.getElementById("cl_milho_terminacao_i");
+            var cl_soja_inicial = document.getElementById("cl_soja_inicial");
+            var cl_soja_crescimento = document.getElementById("cl_soja_crescimento");
+            var cl_soja_terminacao = document.getElementById("cl_soja_terminacao");
+            var cl_calcario_inicial = document.getElementById("cl_calcario_inicial");
+            var cl_calcario_crescimento = document.getElementById("cl_calcario_crescimento");
+            var cl_calcario_terminacao = document.getElementById("cl_calcario_terminacao");
+            var cl_fosfato_inicial = document.getElementById("cl_fosfato_inicial");
+            var cl_fosfato_crescimento = document.getElementById("cl_fosfato_crescimento");
+            var cl_fosfato_terminacao = document.getElementById("cl_fosfato_terminacao");
+            var cl_sal_inicial = document.getElementById("cl_sal_inicial");
+            var cl_sal_crescimento = document.getElementById("cl_sal_crescimento");
+            var cl_sal_terminacao = document.getElementById("cl_sal_terminacao");
+            var cl_dl_inicial = document.getElementById("cl_dl_inicial");
+            var cl_dl_crescimento = document.getElementById("cl_dl_crescimento");
+            var cl_dl_terminacao = document.getElementById("cl_dl_terminacao");
+            var cl_sup_inicial = document.getElementById("cl_sup_inicial");
+            var cl_sup_crescimento = document.getElementById("cl_sup_crescimento");
+            var cl_sup_terminacao = document.getElementById("cl_sup_terminacao");
+            var cl_oleo_inicial = document.getElementById("cl_oleo_inicial");
+            var cl_oleo_crescimento = document.getElementById("cl_oleo_crescimento");
+            var cl_oleo_terminacao = document.getElementById("cl_oleo_terminacao");
+            var cl_total_inicial = document.getElementById("cl_total_inicial");
+            var cl_total_crescimento = document.getElementById("cl_total_crescimento");
+            var cl_total_terminacao = document.getElementById("cl_total_terminacao");
+
+            var pl_milho_inicial = document.getElementById("pl_milho_inicial_i");
+            var pl_milho_cria = document.getElementById("pl_milho_cria_i");
+            var pl_milho_recria = document.getElementById("pl_milho_recria_i");
+            var pl_milho_postura1 = document.getElementById("pl_milho_postura1_i");
+            var pl_milho_postura2 = document.getElementById("pl_milho_postura2_i");
+            var pl_soja_inicial = document.getElementById("pl_soja_inicial");
+            var pl_soja_cria = document.getElementById("pl_soja_cria");
+            var pl_soja_recria = document.getElementById("pl_soja_recria");
+            var pl_soja_postura1 = document.getElementById("pl_soja_postura1");
+            var pl_soja_postura2 = document.getElementById("pl_soja_postura2");
+            var pl_calcario_inicial = document.getElementById("pl_calcario_inicial");
+            var pl_calcario_cria = document.getElementById("pl_calcario_cria");
+            var pl_calcario_recria = document.getElementById("pl_calcario_recria");
+            var pl_calcario_postura1 = document.getElementById("pl_calcario_postura1");
+            var pl_calcario_postura2 = document.getElementById("pl_calcario_postura2");
+            var pl_fosfato_inicial = document.getElementById("pl_fosfato_inicial");
+            var pl_fosfato_cria = document.getElementById("pl_fosfato_cria");
+            var pl_fosfato_recria = document.getElementById("pl_fosfato_recria");
+            var pl_fosfato_postura1 = document.getElementById("pl_fosfato_postura1");
+            var pl_fosfato_postura2 = document.getElementById("pl_fosfato_postura2");
+            var pl_sal_inicial = document.getElementById("pl_sal_inicial");
+            var pl_sal_cria = document.getElementById("pl_sal_cria");
+            var pl_sal_recria = document.getElementById("pl_sal_recria");
+            var pl_sal_postura1 = document.getElementById("pl_sal_postura1");
+            var pl_sal_postura2 = document.getElementById("pl_sal_postura2");
+            var pl_dl_inicial = document.getElementById("pl_dl_inicial");
+            var pl_dl_cria = document.getElementById("pl_dl_cria");
+            var pl_dl_recria = document.getElementById("pl_dl_recria");
+            var pl_dl_postura1 = document.getElementById("pl_dl_postura1");
+            var pl_dl_postura2 = document.getElementById("pl_dl_postura2");
+            var pl_sup_inicial = document.getElementById("pl_sup_inicial");
+            var pl_sup_cria = document.getElementById("pl_sup_cria");
+            var pl_sup_recria = document.getElementById("pl_sup_recria");
+            var pl_sup_postura1 = document.getElementById("pl_sup_postura1");
+            var pl_sup_postura2 = document.getElementById("pl_sup_postura2");
+            var pl_oleo_inicial = document.getElementById("pl_oleo_inicial");
+            var pl_oleo_cria = document.getElementById("pl_oleo_cria");
+            var pl_oleo_recria = document.getElementById("pl_oleo_recria");
+            var pl_oleo_postura1 = document.getElementById("pl_oleo_postura1");
+            var pl_oleo_postura2 = document.getElementById("pl_oleo_postura2");
+            var pl_total_inicial = document.getElementById("pl_total_inicial");
+            var pl_total_cria = document.getElementById("pl_total_cria");
+            var pl_total_recria = document.getElementById("pl_total_recria");
+            var pl_total_postura1 = document.getElementById("pl_total_postura1");
+            var pl_total_postura2 = document.getElementById("pl_total_postura2");
+
+            var ps_milho_inicial = document.getElementById("ps_milho_inicial_i");
+            var ps_milho_cria = document.getElementById("ps_milho_cria_i");
+            var ps_milho_recria = document.getElementById("ps_milho_recria_i");
+            var ps_milho_postura1 = document.getElementById("ps_milho_postura1_i");
+            var ps_milho_postura2 = document.getElementById("ps_milho_postura2_i");
+            var ps_soja_inicial = document.getElementById("ps_soja_inicial");
+            var ps_soja_cria = document.getElementById("ps_soja_cria");
+            var ps_soja_recria = document.getElementById("ps_soja_recria");
+            var ps_soja_postura1 = document.getElementById("ps_soja_postura1");
+            var ps_soja_postura2 = document.getElementById("ps_soja_postura2");
+            var ps_calcario_inicial = document.getElementById("ps_calcario_inicial");
+            var ps_calcario_cria = document.getElementById("ps_calcario_cria");
+            var ps_calcario_recria = document.getElementById("ps_calcario_recria");
+            var ps_calcario_postura1 = document.getElementById("ps_calcario_postura1");
+            var ps_calcario_postura2 = document.getElementById("ps_calcario_postura2");
+            var ps_fosfato_inicial = document.getElementById("ps_fosfato_inicial");
+            var ps_fosfato_cria = document.getElementById("ps_fosfato_cria");
+            var ps_fosfato_recria = document.getElementById("ps_fosfato_recria");
+            var ps_fosfato_postura1 = document.getElementById("ps_fosfato_postura1");
+            var ps_fosfato_postura2 = document.getElementById("ps_fosfato_postura2");
+            var ps_sal_inicial = document.getElementById("ps_sal_inicial");
+            var ps_sal_cria = document.getElementById("ps_sal_cria");
+            var ps_sal_recria = document.getElementById("ps_sal_recria");
+            var ps_sal_postura1 = document.getElementById("ps_sal_postura1");
+            var ps_sal_postura2 = document.getElementById("ps_sal_postura2");
+            var ps_dl_inicial = document.getElementById("ps_dl_inicial");
+            var ps_dl_cria = document.getElementById("ps_dl_cria");
+            var ps_dl_recria = document.getElementById("ps_dl_recria");
+            var ps_dl_postura1 = document.getElementById("ps_dl_postura1");
+            var ps_dl_postura2 = document.getElementById("ps_dl_postura2");
+            var ps_sup_inicial = document.getElementById("ps_sup_inicial");
+            var ps_sup_cria = document.getElementById("ps_sup_cria");
+            var ps_sup_recria = document.getElementById("ps_sup_recria");
+            var ps_sup_postura1 = document.getElementById("ps_sup_postura1");
+            var ps_sup_postura2 = document.getElementById("ps_sup_postura2");
+            var ps_oleo_inicial = document.getElementById("ps_oleo_inicial");
+            var ps_oleo_cria = document.getElementById("ps_oleo_cria");
+            var ps_oleo_recria = document.getElementById("ps_oleo_recria");
+            var ps_oleo_postura1 = document.getElementById("ps_oleo_postura1");
+            var ps_oleo_postura2 = document.getElementById("ps_oleo_postura2");
+            var ps_total_inicial = document.getElementById("ps_total_inicial");
+            var ps_total_cria = document.getElementById("ps_total_cria");
+            var ps_total_recria = document.getElementById("ps_total_recria");
+            var ps_total_postura1 = document.getElementById("ps_total_postura1");
+            var ps_total_postura2 = document.getElementById("ps_total_postura2");
+            
+            // Variável que checa se há realmente algo a ser calculado
+            var temCalculo = false;
+
+            // Distribui valores entre os inputs de milho
+            if (posicao == "cr_milho_inicial") {
+                if (cr_milho_inicial.value == null || cr_milho_inicial.value == "") {
+                    cr_milho_crescimento.value = "";
+                    cr_milho_terminacao.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    cr_milho_crescimento.value = ((63.3019*cr_milho_inicial.value)/57.4578).toFixed(4);
+                    cr_milho_terminacao.value = ((66.1047*cr_milho_inicial.value)/57.4578).toFixed(4);
+                }
+            }
+            else if (posicao == "cr_milho_crescimento") {
+                if (cr_milho_crescimento.value == null || cr_milho_crescimento.value == "") {
+                    cr_milho_inicial.value = "";
+                    cr_milho_terminacao.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    cr_milho_inicial.value = ((57.4578*cr_milho_crescimento.value)/63.3019).toFixed(4);
+                    cr_milho_terminacao.value = ((66.1047*cr_milho_crescimento.value)/63.3019).toFixed(4);
+                }
+            }
+            else if (posicao == "cr_milho_terminacao") {
+                if (cr_milho_terminacao.value == null || cr_milho_terminacao.value == "") {
+                    cr_milho_inicial.value = "";
+                    cr_milho_crescimento.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    cr_milho_inicial.value = ((57.4578*cr_milho_terminacao.value)/66.1047).toFixed(4);
+                    cr_milho_crescimento.value = ((63.3019*cr_milho_terminacao.value)/66.1047).toFixed(4);
+                }
+            }
+            else if (posicao == "cl_milho_inicial") {
+                if (cl_milho_inicial.value == null || cl_milho_inicial.value == "") {
+                    cl_milho_crescimento.value = "";
+                    cl_milho_terminacao.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    cl_milho_crescimento.value = ((64.1304*cl_milho_inicial.value)/54.5975).toFixed(4);
+                    cl_milho_terminacao.value = ((68.7038*cl_milho_inicial.value)/54.5975).toFixed(4);
+                }
+            }
+            else if (posicao == "cl_milho_crescimento") {
+                if (cl_milho_crescimento.value == null || cl_milho_crescimento.value == "") {
+                    cl_milho_inicial.value = "";
+                    cl_milho_terminacao.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    cl_milho_inicial.value = ((54.5975*cl_milho_crescimento.value)/64.1304).toFixed(4);
+                    cl_milho_terminacao.value = ((68.7038*cl_milho_crescimento.value)/64.1304).toFixed(4);
+                }
+            }
+            else if (posicao == "cl_milho_terminacao") {
+                if (cl_milho_terminacao.value == null || cl_milho_terminacao.value == "") {
+                    cl_milho_inicial.value = "";
+                    cl_milho_crescimento.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    cl_milho_inicial.value = ((54.5975*cl_milho_terminacao.value)/68.7038).toFixed(4);
+                    cl_milho_crescimento.value = ((64.1304*cl_milho_terminacao.value)/68.7038).toFixed(4);
+                }
+            }
+            else if (posicao == "pl_milho_inicial") {
+                if (pl_milho_inicial.value == null || pl_milho_inicial.value == "") {
+                    pl_milho_cria.value = "";
+                    pl_milho_recria.value = "";
+                    pl_milho_postura1.value = "";
+                    pl_milho_postura2.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    pl_milho_cria.value = ((66.7441*pl_milho_inicial.value)/66.9299).toFixed(4);
+                    pl_milho_recria.value = ((65.7674*pl_milho_inicial.value)/66.9299).toFixed(4);
+                    pl_milho_postura1.value = ((64.0721*pl_milho_inicial.value)/66.9299).toFixed(4);
+                    pl_milho_postura2.value = ((61.6167*pl_milho_inicial.value)/66.9299).toFixed(4);
+                }
+            }
+            else if (posicao == "pl_milho_cria") {
+                if (pl_milho_cria.value == null || pl_milho_cria.value == "") {
+                    pl_milho_inicial.value = "";
+                    pl_milho_recria.value = "";
+                    pl_milho_postura1.value = "";
+                    pl_milho_postura2.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    pl_milho_inicial.value = ((66.9299*pl_milho_cria.value)/66.7441).toFixed(4);
+                    pl_milho_recria.value = ((65.7674*pl_milho_cria.value)/66.7441).toFixed(4);
+                    pl_milho_postura1.value = ((64.0721*pl_milho_cria.value)/66.7441).toFixed(4);
+                    pl_milho_postura2.value = ((61.6167*pl_milho_cria.value)/66.7441).toFixed(4);
+                }
+            }
+            else if (posicao == "pl_milho_recria") {
+                if (pl_milho_recria.value == null || pl_milho_recria.value == "") {
+                    pl_milho_inicial.value = "";
+                    pl_milho_cria.value = "";
+                    pl_milho_postura1.value = "";
+                    pl_milho_postura2.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    pl_milho_inicial.value = ((66.9299*pl_milho_recria.value)/65.7674).toFixed(4);
+                    pl_milho_cria.value = ((66.7441*pl_milho_recria.value)/65.7674).toFixed(4);
+                    pl_milho_postura1.value = ((64.0721*pl_milho_recria.value)/65.7674).toFixed(4);
+                    pl_milho_postura2.value = ((61.6167*pl_milho_recria.value)/65.7674).toFixed(4);
+                }
+            }
+            else if (posicao == "pl_milho_postura1") {
+                if (pl_milho_postura1.value == null || pl_milho_postura1.value == "") {
+                    pl_milho_inicial.value = "";
+                    pl_milho_cria.value = "";
+                    pl_milho_recria.value = "";
+                    pl_milho_postura2.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    pl_milho_inicial.value = ((66.9299*pl_milho_postura1.value)/64.0721).toFixed(4);
+                    pl_milho_cria.value = ((66.7441*pl_milho_postura1.value)/64.0721).toFixed(4);
+                    pl_milho_recria.value = ((65.7674*pl_milho_postura1.value)/64.0721).toFixed(4);
+                    pl_milho_postura2.value = ((61.6167*pl_milho_postura1.value)/64.0721).toFixed(4);
+                }
+            }
+            else if (posicao == "pl_milho_postura2") {
+                if (pl_milho_postura2.value == null || pl_milho_postura2.value == "") {
+                    pl_milho_inicial.value = "";
+                    pl_milho_cria.value = "";
+                    pl_milho_recria.value = "";
+                    pl_milho_postura1.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    pl_milho_inicial.value = ((66.9299*pl_milho_postura2.value)/61.6167).toFixed(4);
+                    pl_milho_cria.value = ((66.7441*pl_milho_postura2.value)/61.6167).toFixed(4);
+                    pl_milho_recria.value = ((65.7674*pl_milho_postura2.value)/61.6167).toFixed(4);
+                    pl_milho_postura1.value = ((64.0721*pl_milho_postura2.value)/61.6167).toFixed(4);
+                }
+            }
+            else if (posicao == "ps_milho_inicial") {
+                if (ps_milho_inicial.value == null || ps_milho_inicial.value == "") {
+                    ps_milho_cria.value = "";
+                    ps_milho_recria.value = "";
+                    ps_milho_postura1.value = "";
+                    ps_milho_postura2.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    ps_milho_cria.value = ((71.7209*ps_milho_inicial.value)/68.758).toFixed(4);
+                    ps_milho_recria.value = ((67.435*ps_milho_inicial.value)/68.758).toFixed(4);
+                    ps_milho_postura1.value = ((63.8314*ps_milho_inicial.value)/68.758).toFixed(4);
+                    ps_milho_postura2.value = ((63.6416*ps_milho_inicial.value)/68.758).toFixed(4);
+                }
+            }
+            else if (posicao == "ps_milho_cria") {
+                if (ps_milho_cria.value == null || ps_milho_cria.value == "") {
+                    ps_milho_inicial.value = "";
+                    ps_milho_recria.value = "";
+                    ps_milho_postura1.value = "";
+                    ps_milho_postura2.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    ps_milho_inicial.value = ((68.758*ps_milho_cria.value)/71.7209).toFixed(4);
+                    ps_milho_recria.value = ((67.435*ps_milho_cria.value)/71.7209).toFixed(4);
+                    ps_milho_postura1.value = ((63.8314*ps_milho_cria.value)/71.7209).toFixed(4);
+                    ps_milho_postura2.value = ((63.6416*ps_milho_cria.value)/71.7209).toFixed(4);
+                }
+            }
+            else if (posicao == "ps_milho_recria") {
+                if (ps_milho_recria.value == null || ps_milho_recria.value == "") {
+                    ps_milho_inicial.value = "";
+                    ps_milho_cria.value = "";
+                    ps_milho_postura1.value = "";
+                    ps_milho_postura2.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    ps_milho_inicial.value = ((68.758*ps_milho_recria.value)/67.435).toFixed(4);
+                    ps_milho_cria.value = ((71.7209*ps_milho_recria.value)/67.435).toFixed(4);
+                    ps_milho_postura1.value = ((63.8314*ps_milho_recria.value)/67.435).toFixed(4);
+                    ps_milho_postura2.value = ((63.6416*ps_milho_recria.value)/67.435).toFixed(4);
+                }
+            }
+            else if (posicao == "ps_milho_postura1") {
+                if (ps_milho_postura1.value == null || ps_milho_postura1.value == "") {
+                    ps_milho_inicial.value = "";
+                    ps_milho_cria.value = "";
+                    ps_milho_recria.value = "";
+                    ps_milho_postura2.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    ps_milho_inicial.value = ((68.758*ps_milho_postura1.value)/63.8314).toFixed(4);
+                    ps_milho_cria.value = ((71.7209*ps_milho_postura1.value)/63.8314).toFixed(4);
+                    ps_milho_recria.value = ((67.435*ps_milho_postura1.value)/63.8314).toFixed(4);
+                    ps_milho_postura2.value = ((63.6416*ps_milho_postura1.value)/63.8314).toFixed(4);
+                }
+            }
+            else if (posicao == "ps_milho_postura2") {
+                if (ps_milho_postura2.value == null || ps_milho_postura2.value == "") {
+                    ps_milho_inicial.value = "";
+                    ps_milho_cria.value = "";
+                    ps_milho_recria.value = "";
+                    ps_milho_postura1.value = "";
+                }
+                else {
+                    temCalculo = true;
+                    ps_milho_inicial.value = ((68.758*ps_milho_postura2.value)/63.6416).toFixed(4);
+                    ps_milho_cria.value = ((71.7209*ps_milho_postura2.value)/63.6416).toFixed(4);
+                    ps_milho_recria.value = ((67.435*ps_milho_postura2.value)/63.6416).toFixed(4);
+                    ps_milho_postura1.value = ((63.8314*ps_milho_postura2.value)/63.6416).toFixed(4);
+                }
+            }
+
+            if (temCalculo && (posicao == "cr_milho_inicial" || posicao == "cr_milho_crescimento" || posicao == "cr_milho_terminacao")) {
+                // Calcula o resto dos valores
+                var valorTemporario = 0;
+                var somaInicial = parseFloat(cr_milho_inicial.value);
+                var somaCrescimento = parseFloat(cr_milho_crescimento.value);
+                var somaTerminacao = parseFloat(cr_milho_terminacao.value);
+
+                //Frangos de corte em lote misto - inicial
+                valorTemporario = ((35.1898*cr_milho_inicial.value)/57.4578);
+                somaInicial += valorTemporario;
+                cr_soja_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((30.06*cr_milho_crescimento.value)/63.3019);
+                somaCrescimento += valorTemporario;
+                cr_soja_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((27.4122*cr_milho_terminacao.value)/66.1047);
+                somaTerminacao += valorTemporario;
+                cr_soja_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.9767*cr_milho_inicial.value)/57.4578);
+                somaInicial += valorTemporario;
+                cr_calcario_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.1859*cr_milho_crescimento.value)/63.3019);
+                somaCrescimento += valorTemporario;
+                cr_calcario_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.1048*cr_milho_terminacao.value)/66.1047);
+                somaTerminacao += valorTemporario;
+                cr_calcario_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.882*cr_milho_inicial.value)/57.4578);
+                somaInicial += valorTemporario;
+                cr_fosfato_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.3756*cr_milho_crescimento.value)/63.3019);
+                somaCrescimento += valorTemporario;
+                cr_fosfato_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.1236*cr_milho_terminacao.value)/66.1047);
+                somaTerminacao += valorTemporario;
+                cr_fosfato_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*cr_milho_inicial.value)/57.4578);
+                somaInicial += valorTemporario;
+                cr_sal_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*cr_milho_crescimento.value)/63.3019);
+                somaCrescimento += valorTemporario;
+                cr_sal_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*cr_milho_terminacao.value)/66.1047);
+                somaTerminacao += valorTemporario;
+                cr_sal_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.1618*cr_milho_inicial.value)/57.4578);
+                somaInicial += valorTemporario;
+                cr_dl_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.0373*cr_milho_crescimento.value)/63.3019);
+                somaCrescimento += valorTemporario;
+                cr_dl_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.0567*cr_milho_terminacao.value)/66.1047);
+                somaTerminacao += valorTemporario;
+                cr_dl_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*cr_milho_inicial.value)/57.4578);
+                somaInicial += valorTemporario;
+                cr_sup_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*cr_milho_crescimento.value)/63.3019);
+                somaCrescimento += valorTemporario;
+                cr_sup_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*cr_milho_terminacao.value)/66.1047);
+                somaTerminacao += valorTemporario;
+                cr_sup_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((3.4818*cr_milho_inicial.value)/57.4578);
+                somaInicial += valorTemporario;
+                cr_oleo_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((3.1893*cr_milho_crescimento.value)/63.3019);
+                somaCrescimento += valorTemporario;
+                cr_oleo_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((3.3479*cr_milho_terminacao.value)/66.1047);
+                somaTerminacao += valorTemporario;
+                cr_oleo_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                cr_total_inicial.innerHTML = somaInicial.toFixed(2) + " kg";
+                cr_total_crescimento.innerHTML = somaCrescimento.toFixed(2) + " kg";
+                cr_total_terminacao.innerHTML = somaTerminacao.toFixed(2) + " kg";
+            }
+            else if (temCalculo && (posicao == "cl_milho_inicial" || posicao == "cl_milho_crescimento" || posicao == "cl_milho_terminacao")) {
+                // Calcula o resto dos valores
+                var valorTemporario = 0;
+                var somaInicial = parseFloat(cl_milho_inicial.value);
+                var somaCrescimento = parseFloat(cl_milho_crescimento.value);
+                var somaTerminacao = parseFloat(cl_milho_terminacao.value);
+
+                //Frangos de corte de crescimento lento
+                valorTemporario = ((38.8051*cl_milho_inicial.value)/54.5975);
+                somaInicial += valorTemporario;
+                cl_soja_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((28.5698*cl_milho_crescimento.value)/64.1304);
+                somaCrescimento += valorTemporario;
+                cl_soja_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((24.4592*cl_milho_terminacao.value)/68.7038);
+                somaTerminacao += valorTemporario;
+                cl_soja_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.0609*cl_milho_inicial.value)/54.5975);
+                somaInicial += valorTemporario;
+                cl_calcario_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.9726*cl_milho_crescimento.value)/64.1304);
+                somaCrescimento += valorTemporario;
+                cl_calcario_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.8834*cl_milho_terminacao.value)/68.7038);
+                somaTerminacao += valorTemporario;
+                cl_calcario_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.8177*cl_milho_inicial.value)/54.5975);
+                somaInicial += valorTemporario;
+                cl_fosfato_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.6144*cl_milho_crescimento.value)/64.1304);
+                somaCrescimento += valorTemporario;
+                cl_fosfato_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.3782*cl_milho_terminacao.value)/68.7038);
+                somaTerminacao += valorTemporario;
+                cl_fosfato_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*cl_milho_inicial.value)/54.5975);
+                somaInicial += valorTemporario;
+                cl_sal_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*cl_milho_crescimento.value)/64.1304);
+                somaCrescimento += valorTemporario;
+                cl_sal_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*cl_milho_terminacao.value)/68.7038);
+                somaTerminacao += valorTemporario;
+                cl_sal_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.0927*cl_milho_inicial.value)/54.5975);
+                somaInicial += valorTemporario;
+                cl_dl_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.0464*cl_milho_crescimento.value)/64.1304);
+                somaCrescimento += valorTemporario;
+                cl_dl_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.0438*cl_milho_terminacao.value)/68.7038);
+                somaTerminacao += valorTemporario;
+                cl_dl_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*cl_milho_inicial.value)/54.5975);
+                somaInicial += valorTemporario;
+                cl_sup_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*cl_milho_crescimento.value)/64.1304);
+                somaCrescimento += valorTemporario;
+                cl_sup_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*cl_milho_terminacao.value)/68.7038);
+                somaTerminacao += valorTemporario;
+                cl_sup_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((4.7761*cl_milho_inicial.value)/54.5975);
+                somaInicial += valorTemporario;
+                cl_oleo_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((3.8163*cl_milho_crescimento.value)/64.1304);
+                somaCrescimento += valorTemporario;
+                cl_oleo_crescimento.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((3.6816*cl_milho_terminacao.value)/68.7038);
+                somaTerminacao += valorTemporario;
+                cl_oleo_terminacao.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                cl_total_inicial.innerHTML = somaInicial.toFixed(2) + " kg";
+                cl_total_crescimento.innerHTML = somaCrescimento.toFixed(2) + " kg";
+                cl_total_terminacao.innerHTML = somaTerminacao.toFixed(2) + " kg";
+            }
+            else if (temCalculo && (posicao == "pl_milho_inicial" || posicao == "pl_milho_cria" || posicao == "pl_milho_recria" || posicao == "pl_milho_postura1" || posicao == "pl_milho_postura2")) {
+                // Calcula o resto dos valores
+                var valorTemporario = 0;
+                var somaInicial = parseFloat(pl_milho_inicial.value);
+                var somacria = parseFloat(pl_milho_cria.value);
+                var somarecria = parseFloat(pl_milho_recria.value);
+                var somapostura1 = parseFloat(pl_milho_postura1.value);
+                var somapostura2 = parseFloat(pl_milho_postura2.value);
+
+                // Poedeiras comerciais leves
+                valorTemporario = ((27.9703*pl_milho_inicial.value)/66.9299);
+                somaInicial += valorTemporario;
+                pl_soja_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((26.2691*pl_milho_cria.value)/66.7441);
+                somacria += valorTemporario;
+                pl_soja_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((23.0989*pl_milho_recria.value)/65.7674);
+                somarecria += valorTemporario;
+                pl_soja_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((23.3524*pl_milho_postura1.value)/64.0721);
+                somapostura1 += valorTemporario;
+                pl_soja_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((25.9786*pl_milho_postura2.value)/61.6167);
+                somapostura2 += valorTemporario;
+                pl_soja_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.9643*pl_milho_inicial.value)/66.9299);
+                somaInicial += valorTemporario;
+                pl_calcario_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((4.1672*pl_milho_cria.value)/66.7441);
+                somacria += valorTemporario;
+                pl_calcario_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((8.1889*pl_milho_recria.value)/65.7674);
+                somarecria += valorTemporario;
+                pl_calcario_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((9.6012*pl_milho_postura1.value)/64.0721);
+                somapostura1 += valorTemporario;
+                pl_calcario_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((9.7688*pl_milho_postura2.value)/61.6167);
+                somapostura2 += valorTemporario;
+                pl_calcario_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((2.153*pl_milho_inicial.value)/66.9299);
+                somaInicial += valorTemporario;
+                pl_fosfato_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.9442*pl_milho_cria.value)/66.7441);
+                somacria += valorTemporario;
+                pl_fosfato_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.9802*pl_milho_recria.value)/65.7674);
+                somarecria += valorTemporario;
+                pl_fosfato_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.983*pl_milho_postura1.value)/64.0721);
+                somapostura1 += valorTemporario;
+                pl_fosfato_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.6935*pl_milho_postura2.value)/61.6167);
+                somapostura2 += valorTemporario;
+                pl_fosfato_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*pl_milho_inicial.value)/66.9299);
+                somaInicial += valorTemporario;
+                pl_sal_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*pl_milho_cria.value)/66.7441);
+                somacria += valorTemporario;
+                pl_sal_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*pl_milho_recria.value)/65.7674);
+                somarecria += valorTemporario;
+                pl_sal_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*pl_milho_postura1.value)/64.0721);
+                somapostura1 += valorTemporario;
+                pl_sal_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*pl_milho_postura2.value)/61.6167);
+                somapostura2 += valorTemporario;
+                pl_sal_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.1324*pl_milho_inicial.value)/66.9299);
+                somaInicial += valorTemporario;
+                pl_dl_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.0255*pl_milho_cria.value)/66.7441);
+                somacria += valorTemporario;
+                pl_dl_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.1147*pl_milho_recria.value)/65.7674);
+                somarecria += valorTemporario;
+                pl_dl_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.1412*pl_milho_postura1.value)/64.0721);
+                somapostura1 += valorTemporario;
+                pl_dl_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.0922*pl_milho_postura2.value)/61.6167);
+                somapostura2 += valorTemporario;
+                pl_dl_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*pl_milho_inicial.value)/66.9299);
+                somaInicial += valorTemporario;
+                pl_sup_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*pl_milho_cria.value)/66.7441);
+                somacria += valorTemporario;
+                pl_sup_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*pl_milho_recria.value)/65.7674);
+                somarecria += valorTemporario;
+                pl_sup_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*pl_milho_postura1.value)/64.0721);
+                somapostura1 += valorTemporario;
+                pl_sup_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*pl_milho_postura2.value)/61.6167);
+                somapostura2 += valorTemporario;
+                pl_sup_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                pl_oleo_inicial.innerHTML = "—";
+                pl_oleo_cria.innerHTML = "—";
+                pl_oleo_recria.innerHTML = "—";
+                pl_oleo_postura1.innerHTML = "—";
+                pl_oleo_postura2.innerHTML = "—";
+
+                pl_total_inicial.innerHTML = somaInicial.toFixed(2) + " kg";
+                pl_total_cria.innerHTML = somacria.toFixed(2) + " kg";
+                pl_total_recria.innerHTML = somarecria.toFixed(2) + " kg";
+                pl_total_postura1.innerHTML = somapostura1.toFixed(2) + " kg";
+                pl_total_postura2.innerHTML = somapostura2.toFixed(2) + " kg";
+            }
+            else if (temCalculo && (posicao == "ps_milho_inicial" || posicao == "ps_milho_cria" || posicao == "ps_milho_recria" || posicao == "ps_milho_postura1" || posicao == "ps_milho_postura2")) {
+                // Calcula o resto dos valores
+                var valorTemporario = 0;
+                var somaInicial = parseFloat(ps_milho_inicial.value);
+                var somacria = parseFloat(ps_milho_cria.value);
+                var somarecria = parseFloat(ps_milho_recria.value);
+                var somapostura1 = parseFloat(ps_milho_postura1.value);
+                var somapostura2 = parseFloat(ps_milho_postura2.value);
+
+                // Poedeiras comerciais semipesadas
+                valorTemporario = ((26.805*ps_milho_inicial.value)/68.758);
+                somaInicial += valorTemporario;
+                ps_soja_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((24.2614*ps_milho_cria.value)/71.7209);
+                somacria += valorTemporario;
+                ps_soja_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((22.8176*ps_milho_recria.value)/67.435);
+                somarecria += valorTemporario;
+                ps_soja_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((24.1506*ps_milho_postura1.value)/63.8314);
+                somapostura1 += valorTemporario;
+                ps_soja_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((24.1204*ps_milho_postura2.value)/63.6416);
+                somapostura2 += valorTemporario;
+                ps_soja_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.2026*ps_milho_inicial.value)/68.758);
+                somaInicial += valorTemporario;
+                ps_calcario_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.1215*ps_milho_cria.value)/71.7209);
+                somacria += valorTemporario;
+                ps_calcario_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((6.8059*ps_milho_recria.value)/67.435);
+                somarecria += valorTemporario;
+                ps_calcario_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((9.146*ps_milho_postura1.value)/63.8314);
+                somapostura1 += valorTemporario;
+                ps_calcario_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((9.5866*ps_milho_postura2.value)/63.6416);
+                somapostura2 += valorTemporario;
+                ps_calcario_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((2.2024*ps_milho_inicial.value)/68.758);
+                somaInicial += valorTemporario;
+                ps_fosfato_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.9488*ps_milho_cria.value)/71.7209);
+                somacria += valorTemporario;
+                ps_fosfato_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.9777*ps_milho_recria.value)/67.435);
+                somarecria += valorTemporario;
+                ps_fosfato_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.9382*ps_milho_postura1.value)/63.8314);
+                somapostura1 += valorTemporario;
+                ps_fosfato_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((1.6689*ps_milho_postura2.value)/63.6416);
+                somapostura2 += valorTemporario;
+                ps_fosfato_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*ps_milho_inicial.value)/68.758);
+                somaInicial += valorTemporario;
+                ps_sal_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*ps_milho_cria.value)/71.7209);
+                somacria += valorTemporario;
+                ps_sal_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*ps_milho_recria.value)/67.435);
+                somarecria += valorTemporario;
+                ps_sal_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*ps_milho_postura1.value)/63.8314);
+                somapostura1 += valorTemporario;
+                ps_sal_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.35*ps_milho_postura2.value)/63.6416);
+                somapostura2 += valorTemporario;
+                ps_sal_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.182*ps_milho_inicial.value)/68.758);
+                somaInicial += valorTemporario;
+                ps_dl_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.0974*ps_milho_cria.value)/71.7209);
+                somacria += valorTemporario;
+                ps_dl_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.1138*ps_milho_recria.value)/67.435);
+                somarecria += valorTemporario;
+                ps_dl_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.0838*ps_milho_postura1.value)/63.8314);
+                somapostura1 += valorTemporario;
+                ps_dl_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.1326*ps_milho_postura2.value)/63.6416);
+                somapostura2 += valorTemporario;
+                ps_dl_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*ps_milho_inicial.value)/68.758);
+                somaInicial += valorTemporario;
+                ps_sup_inicial.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*ps_milho_cria.value)/71.7209);
+                somacria += valorTemporario;
+                ps_sup_cria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*ps_milho_recria.value)/67.435);
+                somarecria += valorTemporario;
+                ps_sup_recria.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*ps_milho_postura1.value)/63.8314);
+                somapostura1 += valorTemporario;
+                ps_sup_postura1.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                valorTemporario = ((0.5*ps_milho_postura2.value)/63.6416);
+                somapostura2 += valorTemporario;
+                ps_sup_postura2.innerHTML = valorTemporario.toFixed(2) + " kg";
+
+                ps_oleo_inicial.innerHTML = "—";
+                ps_oleo_cria.innerHTML = "—";
+                ps_oleo_recria.innerHTML = "—";
+                ps_oleo_postura1.innerHTML = "—";
+                ps_oleo_postura2.innerHTML = "—";
+
+                ps_total_inicial.innerHTML = somaInicial.toFixed(2) + " kg";
+                ps_total_cria.innerHTML = somacria.toFixed(2) + " kg";
+                ps_total_recria.innerHTML = somarecria.toFixed(2) + " kg";
+                ps_total_postura1.innerHTML = somapostura1.toFixed(2) + " kg";
+                ps_total_postura2.innerHTML = somapostura2.toFixed(2) + " kg";
+            }
+            else {
+                limparValoresGerados ();
+            }
+            
+        }
+
+        function calcular () {
+
+            var milho = 0; // Declaro a variável milho para usar no cálculo
+
+            // Coleta dados de milho da tabela Frangos de corte em lote misto
+            var cr_milho_inicial = document.getElementById("cr_milho_inicial_i");
+            var cr_milho_crescimento = document.getElementById("cr_milho_crescimento_i");
+            var cr_milho_terminacao = document.getElementById("cr_milho_terminacao_i");
+            var cl_milho_inicial = document.getElementById("cl_milho_inicial_i");
+            var cl_milho_crescimento = document.getElementById("cl_milho_crescimento_i");
+            var cl_milho_terminacao = document.getElementById("cl_milho_terminacao_i");
+            var pl_milho_inicial = document.getElementById("pl_milho_inicial_i");
+            var pl_milho_cria = document.getElementById("pl_milho_cria_i");
+            var pl_milho_recria = document.getElementById("pl_milho_recria_i");
+            var pl_milho_postura1 = document.getElementById("pl_milho_postura1_i");
+            var pl_milho_postura2 = document.getElementById("pl_milho_postura2_i");
+            var ps_milho_inicial = document.getElementById("ps_milho_inicial_i");
+            var ps_milho_cria = document.getElementById("ps_milho_cria_i");
+            var ps_milho_recria = document.getElementById("ps_milho_recria_i");
+            var ps_milho_postura1 = document.getElementById("ps_milho_postura1_i");
+            var ps_milho_postura2 = document.getElementById("ps_milho_postura2_i");
+
+            // Verifica se ao menos um input tem dados
+            if ((cr_milho_inicial.value == null || cr_milho_inicial.value == "") && 
+            (cr_milho_crescimento.value == null || cr_milho_crescimento.value == "") && 
+            (cr_milho_terminacao.value == null || cr_milho_terminacao.value == "") &&
+            (cl_milho_inicial.value == null || cl_milho_inicial.value == "") && 
+            (cl_milho_crescimento.value == null || cl_milho_crescimento.value == "") && 
+            (cl_milho_terminacao.value == null || cl_milho_terminacao.value == "") &&
+            (pl_milho_inicial.value == null || pl_milho_inicial.value == "") && 
+            (pl_milho_cria.value == null || pl_milho_cria.value == "") && 
+            (pl_milho_recria.value == null || pl_milho_recria.value == "") &&
+            (pl_milho_postura1.value == null || pl_milho_postura1.value == "") &&
+            (pl_milho_postura2.value == null || pl_milho_postura2.value == "") &&
+            (ps_milho_inicial.value == null || ps_milho_inicial.value == "") && 
+            (ps_milho_cria.value == null || ps_milho_cria.value == "") && 
+            (ps_milho_recria.value == null || ps_milho_recria.value == "") &&
+            (ps_milho_postura1.value == null || ps_milho_postura1.value == "") &&
+            (ps_milho_postura2.value == null || ps_milho_postura2.value == "")) {
+                // Não faça nada
+            }
+            else {
+                if (cr_milho_inicial === document.activeElement) {
+                    milho = cr_milho_inicial.value;
+                    limparValores();
+                    cr_milho_inicial.value = milho;
+                    calculoBruto(milho, "cr_milho_inicial");
+                }
+                else if (cr_milho_crescimento === document.activeElement) {
+                    milho = cr_milho_crescimento.value;
+                    limparValores();
+                    cr_milho_crescimento.value = milho;
+                    calculoBruto(milho, "cr_milho_crescimento");
+                }
+                else if (cr_milho_terminacao === document.activeElement) {
+                    milho = cr_milho_terminacao.value;
+                    limparValores();
+                    cr_milho_terminacao.value = milho;
+                    calculoBruto(milho, "cr_milho_terminacao");
+                }
+                else if (cl_milho_inicial === document.activeElement) {
+                    milho = cl_milho_inicial.value;
+                    limparValores();
+                    cl_milho_inicial.value = milho;
+                    calculoBruto(milho, "cl_milho_inicial");
+                }
+                else if (cl_milho_crescimento === document.activeElement) {
+                    milho = cl_milho_crescimento.value;
+                    limparValores();
+                    cl_milho_crescimento.value = milho;
+                    calculoBruto(milho, "cl_milho_crescimento");
+                }
+                else if (cl_milho_terminacao === document.activeElement) {
+                    milho = cl_milho_terminacao.value;
+                    limparValores();
+                    cl_milho_terminacao.value = milho;
+                    calculoBruto(milho, "cl_milho_terminacao");
+                }
+                else if (pl_milho_inicial === document.activeElement) {
+                    milho = pl_milho_inicial.value;
+                    limparValores();
+                    pl_milho_inicial.value = milho;
+                    calculoBruto(milho, "pl_milho_inicial");
+                }
+                else if (pl_milho_cria === document.activeElement) {
+                    milho = pl_milho_cria.value;
+                    limparValores();
+                    pl_milho_cria.value = milho;
+                    calculoBruto(milho, "pl_milho_cria");
+                }
+                else if (pl_milho_recria === document.activeElement) {
+                    milho = pl_milho_recria.value;
+                    limparValores();
+                    pl_milho_recria.value = milho;
+                    calculoBruto(milho, "pl_milho_recria");
+                }
+                else if (pl_milho_postura1 === document.activeElement) {
+                    milho = pl_milho_postura1.value;
+                    limparValores();
+                    pl_milho_postura1.value = milho;
+                    calculoBruto(milho, "pl_milho_postura1");
+                }
+                else if (pl_milho_postura2 === document.activeElement) {
+                    milho = pl_milho_postura2.value;
+                    limparValores();
+                    pl_milho_postura2.value = milho;
+                    calculoBruto(milho, "pl_milho_postura2");
+                }
+                else if (ps_milho_inicial === document.activeElement) {
+                    milho = ps_milho_inicial.value;
+                    limparValores();
+                    ps_milho_inicial.value = milho;
+                    calculoBruto(milho, "ps_milho_inicial");
+                }
+                else if (ps_milho_cria === document.activeElement) {
+                    milho = ps_milho_cria.value;
+                    limparValores();
+                    ps_milho_cria.value = milho;
+                    calculoBruto(milho, "ps_milho_cria");
+                }
+                else if (ps_milho_recria === document.activeElement) {
+                    milho = ps_milho_recria.value;
+                    limparValores();
+                    ps_milho_recria.value = milho;
+                    calculoBruto(milho, "ps_milho_recria");
+                }
+                else if (ps_milho_postura1 === document.activeElement) {
+                    milho = ps_milho_postura1.value;
+                    limparValores();
+                    ps_milho_postura1.value = milho;
+                    calculoBruto(milho, "ps_milho_postura1");
+                }
+                else if (ps_milho_postura2 === document.activeElement) {
+                    milho = ps_milho_postura2.value;
+                    limparValores();
+                    ps_milho_postura2.value = milho;
+                    calculoBruto(milho, "ps_milho_postura2");
+                }
+            }  
+        }
+
+        document.addEventListener("keyup", function (event) {
+            var entrada = document.getElementById(document.activeElement.id);
+            if (event.key == ',') {
+                entrada.value = entrada.value.slice(0, - 1) + '.';
+            }
+            else {
+                calcular ();
+            }
+        })
+    </script>
+</head>
+<body>
+    <div class="container">
+        <form>
+            Selecione o tipo de criação: 
+            <select id="tabelas_f" onchange="selecionarTabela()">
+                <option value="corte_rapido" selected>Frangos de corte confinados</option>
+                <option value="corte_longo">Frangos de corte semiconfinados</option>
+                <option value="poedeiras_leves">Poedeiras comerciais leves</option>
+                <option value="poedeiras_semipesadas">Poedeiras comerciais semipesadas</option>
+            </select>
+        </form>
+
+        <div class="informe">
+            <p>Informe a quantidade de milho disponível em quilos para qualquer uma das fases que o alpicativo calculará o resto:</p>
+        </div>
+
+        <div class="tabelasDeFormulas">
+            <!--------------------------------- ------------------------------------------------------------------------------->
+            <!-- Frangos de corte em lote misto (machos e fêmeas) confinados – 1 a 42 dias ------------------------------------>
+            <!--------------------------------- ------------------------------------------------------------------------------->
+            <table class="tabelaDeFormula" id="cr">
+                <caption>Frangos de corte em lote misto (machos e fêmeas) confinados – 1 a 42 dias</caption>
+                <tr>
+                    <th class="ingrediente celulaInvisivel"></th>
+                    <th>Fase inicial</th>
+                    <th>Fase de crescimento</th>
+                    <th>Fase de terminação</th>
+                </tr>
+                <tr class="segundaLinha">
+                    <td class="ingrediente ingredienteTitulo">Ingredientes</td>
+                    <td class="dias">(1 à 22 dias)</td>
+                    <td class="dias">(22 à 33 dias)</td>
+                    <td class="dias">(34 à 42 dias)</td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Milho (7,87%)</td>
+                    <td id="cr_milho_inicial" class="celulaInvisivel celulaInput"><input type="text" name="cr_milho_inicial_i" id="cr_milho_inicial_i" placeholder="57.4578"> kg</td>
+                    <td id="cr_milho_crescimento" class="celulaInvisivel celulaInput"><input type="text" name="cr_milho_crescimento_i" id="cr_milho_crescimento_i" placeholder="63.3019"> kg</td>
+                    <td id="cr_milho_terminacao" class="celulaInvisivel celulaInput"><input type="text" name="cr_milho_terminacao_i" id="cr_milho_terminacao_i" placeholder="66.1047"> kg</td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Farelo de soja (46%)</td>
+                    <td class="valoresIngredientes" id="cr_soja_inicial"></td>
+                    <td class="valoresIngredientes" id="cr_soja_crescimento"></td>
+                    <td class="valoresIngredientes" id="cr_soja_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Calcário calcítico</td>
+                    <td class="valoresIngredientes" id="cr_calcario_inicial"></td>
+                    <td class="valoresIngredientes" id="cr_calcario_crescimento"></td>
+                    <td class="valoresIngredientes" id="cr_calcario_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Fosfato bicálcico</td>
+                    <td class="valoresIngredientes" id="cr_fosfato_inicial"></td>
+                    <td class="valoresIngredientes" id="cr_fosfato_crescimento"></td>
+                    <td class="valoresIngredientes" id="cr_fosfato_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Sal comum</td>
+                    <td class="valoresIngredientes" id="cr_sal_inicial"></td>
+                    <td class="valoresIngredientes" id="cr_sal_crescimento"></td>
+                    <td class="valoresIngredientes" id="cr_sal_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">DL-Metionina 99%</td>
+                    <td class="valoresIngredientes" id="cr_dl_inicial"></td>
+                    <td class="valoresIngredientes" id="cr_dl_crescimento"></td>
+                    <td class="valoresIngredientes" id="cr_dl_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Suplemento mineral</td>
+                    <td class="valoresIngredientes" id="cr_sup_inicial"></td>
+                    <td class="valoresIngredientes" id="cr_sup_crescimento"></td>
+                    <td class="valoresIngredientes" id="cr_sup_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Óleo de soja</td>
+                    <td class="valoresIngredientes" id="cr_oleo_inicial"></td>
+                    <td class="valoresIngredientes" id="cr_oleo_crescimento"></td>
+                    <td class="valoresIngredientes" id="cr_oleo_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">PESO TOTAL</td>
+                    <td class="valoresIngredientes" id="cr_total_inicial"></td>
+                    <td class="valoresIngredientes" id="cr_total_crescimento"></td>
+                    <td class="valoresIngredientes" id="cr_total_terminacao"></td>
+                </tr>
+            </table>
+
+
+            <!--------------------------------- ------------------------------------------------------------------------------->
+            <!-- Frangos de corte de crescimento lento (machos e fêmeas) semiconfinados – 1 a 90 dias ------------------------->
+            <!--------------------------------- ------------------------------------------------------------------------------->
+            <table class="tabelaDeFormula tabelaInicialmenteEscondida" id="cl">
+                <caption>Frangos de corte de crescimento lento (machos e fêmeas) semiconfinados – 1 a 90 dias</caption>
+                <tr>
+                    <th class="ingrediente celulaInvisivel"></th>
+                    <th>Fase inicial</th>
+                    <th>Fase de crescimento</th>
+                    <th>Fase de terminação</th>
+                </tr>
+                <tr class="segundaLinha">
+                    <td class="ingrediente ingredienteTitulo">Ingredientes</td>
+                    <td class="dias">(1 à 28 dias)</td>
+                    <td class="dias">(29 à 70 dias)</td>
+                    <td class="dias">(71 à 90 dias)</td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Milho (7,87%)</td>
+                    <td id="cl_milho_inicial" class="celulaInvisivel celulaInput"><input type="text" name="cl_milho_inicial_i" id="cl_milho_inicial_i" placeholder="54.5975"> kg</td>
+                    <td id="cl_milho_crescimento" class="celulaInvisivel celulaInput"><input type="text" name="cl_milho_crescimento_i" id="cl_milho_crescimento_i" placeholder="64.1304"> kg</td>
+                    <td id="cl_milho_terminacao" class="celulaInvisivel celulaInput"><input type="text" name="cl_milho_terminacao_i" id="cl_milho_terminacao_i" placeholder="68.7038"> kg</td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Farelo de soja (46%)</td>
+                    <td class="valoresIngredientes" id="cl_soja_inicial"></td>
+                    <td class="valoresIngredientes" id="cl_soja_crescimento"></td>
+                    <td class="valoresIngredientes" id="cl_soja_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Calcário calcítico</td>
+                    <td class="valoresIngredientes" id="cl_calcario_inicial"></td>
+                    <td class="valoresIngredientes" id="cl_calcario_crescimento"></td>
+                    <td class="valoresIngredientes" id="cl_calcario_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Fosfato bicálcico</td>
+                    <td class="valoresIngredientes" id="cl_fosfato_inicial"></td>
+                    <td class="valoresIngredientes" id="cl_fosfato_crescimento"></td>
+                    <td class="valoresIngredientes" id="cl_fosfato_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Sal comum</td>
+                    <td class="valoresIngredientes" id="cl_sal_inicial"></td>
+                    <td class="valoresIngredientes" id="cl_sal_crescimento"></td>
+                    <td class="valoresIngredientes" id="cl_sal_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">DL-Metionina 99%</td>
+                    <td class="valoresIngredientes" id="cl_dl_inicial"></td>
+                    <td class="valoresIngredientes" id="cl_dl_crescimento"></td>
+                    <td class="valoresIngredientes" id="cl_dl_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Suplemento mineral</td>
+                    <td class="valoresIngredientes" id="cl_sup_inicial"></td>
+                    <td class="valoresIngredientes" id="cl_sup_crescimento"></td>
+                    <td class="valoresIngredientes" id="cl_sup_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Óleo de soja</td>
+                    <td class="valoresIngredientes" id="cl_oleo_inicial"></td>
+                    <td class="valoresIngredientes" id="cl_oleo_crescimento"></td>
+                    <td class="valoresIngredientes" id="cl_oleo_terminacao"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">PESO TOTAL</td>
+                    <td class="valoresIngredientes" id="cl_total_inicial"></td>
+                    <td class="valoresIngredientes" id="cl_total_crescimento"></td>
+                    <td class="valoresIngredientes" id="cl_total_terminacao"></td>
+                </tr>
+            </table>
+
+            <!--------------------------------- ------------------------------------------------------------------------------->
+            <!-- Poedeiras comerciais leves – 1 a 80 semanas ------------------------------------------------------------------>
+            <!--------------------------------- ------------------------------------------------------------------------------->
+            <table class="tabelaDeFormula tabelaInicialmenteEscondida" id="pl">
+                <caption>Poedeiras comerciais leves – 1 a 80 semanas</caption>
+                <tr>
+                    <th class="ingrediente celulaInvisivel"></th>
+                    <th>Fase inicial</th>
+                    <th>Fase de cria</th>
+                    <th>Fase de recria</th>
+                    <th>Fase de postura 1</th>
+                    <th>Fase de postura 2</th>
+                </tr>
+                <tr class="segundaLinha">
+                    <td class="ingrediente ingredienteTitulo">Ingredientes</td>
+                    <td class="dias">(0 a 6 semanas)</td>
+                    <td class="dias">(7 a 12 semanas)</td>
+                    <td class="dias">(13 a 18 semanas)</td>
+                    <td class="dias">(19 a 40 semanas)</td>
+                    <td class="dias">(41 a 80 semanas)</td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Milho (7,87%)</td>
+                    <td id="pl_milho_inicial" class="celulaInvisivel celulaInput"><input type="text" name="pl_milho_inicial_i" id="pl_milho_inicial_i" placeholder="66.9299"> kg</td>
+                    <td id="pl_milho_cria" class="celulaInvisivel celulaInput"><input type="text" name="pl_milho_cria_i" id="pl_milho_cria_i" placeholder="66.7441"> kg</td>
+                    <td id="pl_milho_recria" class="celulaInvisivel celulaInput"><input type="text" name="pl_milho_recria_i" id="pl_milho_recria_i" placeholder="65.7674"> kg</td>
+                    <td id="pl_milho_postura1" class="celulaInvisivel celulaInput"><input type="text" name="pl_milho_postura1_i" id="pl_milho_postura1_i" placeholder="64.0721"> kg</td>
+                    <td id="pl_milho_postura2" class="celulaInvisivel celulaInput"><input type="text" name="pl_milho_postura2_i" id="pl_milho_postura2_i" placeholder="61.6167"> kg</td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Farelo de soja (46%)</td>
+                    <td class="valoresIngredientes" id="pl_soja_inicial"></td>
+                    <td class="valoresIngredientes" id="pl_soja_cria"></td>
+                    <td class="valoresIngredientes" id="pl_soja_recria"></td>
+                    <td class="valoresIngredientes" id="pl_soja_postura1"></td>
+                    <td class="valoresIngredientes" id="pl_soja_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Calcário calcítico</td>
+                    <td class="valoresIngredientes" id="pl_calcario_inicial"></td>
+                    <td class="valoresIngredientes" id="pl_calcario_cria"></td>
+                    <td class="valoresIngredientes" id="pl_calcario_recria"></td>
+                    <td class="valoresIngredientes" id="pl_calcario_postura1"></td>
+                    <td class="valoresIngredientes" id="pl_calcario_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Fosfato bicálcico</td>
+                    <td class="valoresIngredientes" id="pl_fosfato_inicial"></td>
+                    <td class="valoresIngredientes" id="pl_fosfato_cria"></td>
+                    <td class="valoresIngredientes" id="pl_fosfato_recria"></td>
+                    <td class="valoresIngredientes" id="pl_fosfato_postura1"></td>
+                    <td class="valoresIngredientes" id="pl_fosfato_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Sal comum</td>
+                    <td class="valoresIngredientes" id="pl_sal_inicial"></td>
+                    <td class="valoresIngredientes" id="pl_sal_cria"></td>
+                    <td class="valoresIngredientes" id="pl_sal_recria"></td>
+                    <td class="valoresIngredientes" id="pl_sal_postura1"></td>
+                    <td class="valoresIngredientes" id="pl_sal_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">DL-Metionina 99%</td>
+                    <td class="valoresIngredientes" id="pl_dl_inicial"></td>
+                    <td class="valoresIngredientes" id="pl_dl_cria"></td>
+                    <td class="valoresIngredientes" id="pl_dl_recria"></td>
+                    <td class="valoresIngredientes" id="pl_dl_postura1"></td>
+                    <td class="valoresIngredientes" id="pl_dl_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Suplemento mineral</td>
+                    <td class="valoresIngredientes" id="pl_sup_inicial"></td>
+                    <td class="valoresIngredientes" id="pl_sup_cria"></td>
+                    <td class="valoresIngredientes" id="pl_sup_recria"></td>
+                    <td class="valoresIngredientes" id="pl_sup_postura1"></td>
+                    <td class="valoresIngredientes" id="pl_sup_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Óleo de soja</td>
+                    <td class="valoresIngredientes" id="pl_oleo_inicial"></td>
+                    <td class="valoresIngredientes" id="pl_oleo_cria"></td>
+                    <td class="valoresIngredientes" id="pl_oleo_recria"></td>
+                    <td class="valoresIngredientes" id="pl_oleo_postura1"></td>
+                    <td class="valoresIngredientes" id="pl_oleo_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">PESO TOTAL</td>
+                    <td class="valoresIngredientes" id="pl_total_inicial"></td>
+                    <td class="valoresIngredientes" id="pl_total_cria"></td>
+                    <td class="valoresIngredientes" id="pl_total_recria"></td>
+                    <td class="valoresIngredientes" id="pl_total_postura1"></td>
+                    <td class="valoresIngredientes" id="pl_total_postura2"></td>
+                </tr>
+            </table>
+
+            <!--------------------------------- ------------------------------------------------------------------------------->
+            <!-- Poedeiras comerciais semipesadas – 1 a 76 semanas ----------------------------------------------------------->
+            <!--------------------------------- ------------------------------------------------------------------------------->
+            <table class="tabelaDeFormula tabelaInicialmenteEscondida" id="ps">
+                <caption>Poedeiras comerciais semipesadas – 1 a 76 semanas</caption>
+                <tr>
+                    <th class="ingrediente celulaInvisivel"></th>
+                    <th>Fase inicial</th>
+                    <th>Fase de cria</th>
+                    <th>Fase de recria</th>
+                    <th>Fase de postura 1</th>
+                    <th>Fase de postura 2</th>
+                </tr>
+                <tr class="segundaLinha">
+                    <td class="ingrediente ingredienteTitulo">Ingredientes</td>
+                    <td class="dias">(0 a 6 semanas)</td>
+                    <td class="dias">(7 a 12 semanas)</td>
+                    <td class="dias">(13 a 18 semanas)</td>
+                    <td class="dias">(19 a 40 semanas)</td>
+                    <td class="dias">(41 a 76 semanas)</td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Milho (7,87%)</td>
+                    <td id="ps_milho_inicial" class="celulaInvisivel celulaInput"><input type="text" name="ps_milho_inicial_i" id="ps_milho_inicial_i" placeholder="68.758"> kg</td>
+                    <td id="ps_milho_cria" class="celulaInvisivel celulaInput"><input type="text" name="ps_milho_cria_i" id="ps_milho_cria_i" placeholder="71.7209"> kg</td>
+                    <td id="ps_milho_recria" class="celulaInvisivel celulaInput"><input type="text" name="ps_milho_recria_i" id="ps_milho_recria_i" placeholder="67.435"> kg</td>
+                    <td id="ps_milho_postura1" class="celulaInvisivel celulaInput"><input type="text" name="ps_milho_postura1_i" id="ps_milho_postura1_i" placeholder="63.8314"> kg</td>
+                    <td id="ps_milho_postura2" class="celulaInvisivel celulaInput"><input type="text" name="ps_milho_postura2_i" id="ps_milho_postura2_i" placeholder="63.6416"> kg</td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Farelo de soja (46%)</td>
+                    <td class="valoresIngredientes" id="ps_soja_inicial"></td>
+                    <td class="valoresIngredientes" id="ps_soja_cria"></td>
+                    <td class="valoresIngredientes" id="ps_soja_recria"></td>
+                    <td class="valoresIngredientes" id="ps_soja_postura1"></td>
+                    <td class="valoresIngredientes" id="ps_soja_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Calcário calcítico</td>
+                    <td class="valoresIngredientes" id="ps_calcario_inicial"></td>
+                    <td class="valoresIngredientes" id="ps_calcario_cria"></td>
+                    <td class="valoresIngredientes" id="ps_calcario_recria"></td>
+                    <td class="valoresIngredientes" id="ps_calcario_postura1"></td>
+                    <td class="valoresIngredientes" id="ps_calcario_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Fosfato bicálcico</td>
+                    <td class="valoresIngredientes" id="ps_fosfato_inicial"></td>
+                    <td class="valoresIngredientes" id="ps_fosfato_cria"></td>
+                    <td class="valoresIngredientes" id="ps_fosfato_recria"></td>
+                    <td class="valoresIngredientes" id="ps_fosfato_postura1"></td>
+                    <td class="valoresIngredientes" id="ps_fosfato_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Sal comum</td>
+                    <td class="valoresIngredientes" id="ps_sal_inicial"></td>
+                    <td class="valoresIngredientes" id="ps_sal_cria"></td>
+                    <td class="valoresIngredientes" id="ps_sal_recria"></td>
+                    <td class="valoresIngredientes" id="ps_sal_postura1"></td>
+                    <td class="valoresIngredientes" id="ps_sal_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">DL-Metionina 99%</td>
+                    <td class="valoresIngredientes" id="ps_dl_inicial"></td>
+                    <td class="valoresIngredientes" id="ps_dl_cria"></td>
+                    <td class="valoresIngredientes" id="ps_dl_recria"></td>
+                    <td class="valoresIngredientes" id="ps_dl_postura1"></td>
+                    <td class="valoresIngredientes" id="ps_dl_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Suplemento mineral</td>
+                    <td class="valoresIngredientes" id="ps_sup_inicial"></td>
+                    <td class="valoresIngredientes" id="ps_sup_cria"></td>
+                    <td class="valoresIngredientes" id="ps_sup_recria"></td>
+                    <td class="valoresIngredientes" id="ps_sup_postura1"></td>
+                    <td class="valoresIngredientes" id="ps_sup_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">Óleo de soja</td>
+                    <td class="valoresIngredientes" id="ps_oleo_inicial"></td>
+                    <td class="valoresIngredientes" id="ps_oleo_cria"></td>
+                    <td class="valoresIngredientes" id="ps_oleo_recria"></td>
+                    <td class="valoresIngredientes" id="ps_oleo_postura1"></td>
+                    <td class="valoresIngredientes" id="ps_oleo_postura2"></td>
+                </tr>
+                <tr>
+                    <td class="ingrediente">PESO TOTAL</td>
+                    <td class="valoresIngredientes" id="ps_total_inicial"></td>
+                    <td class="valoresIngredientes" id="ps_total_cria"></td>
+                    <td class="valoresIngredientes" id="ps_total_recria"></td>
+                    <td class="valoresIngredientes" id="ps_total_postura1"></td>
+                    <td class="valoresIngredientes" id="ps_total_postura2"></td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</body>
+</html>
