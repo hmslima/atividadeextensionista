@@ -33,42 +33,98 @@
     <!--------------------------- código CSS ------------------------------>
     <!--------------------------------- ----------------------------------->
     <style>
-        body {background-color: #F3DFC8;}
-        .container {width: 80%; margin: auto;}
+        
+        body {background-color: #dcdfd8;}
+
+        #tabela_select{background-color:transparent; 
+            width: 50%; display: flexbox;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+             margin: auto;
+              padding: 10px;
+               border-radius: 20px 10px; 
+                background-size: 100px;
+               text-align: center;
+               
+             }
+
+        #tabelas_f{background-color: rgb(197, 219, 208); padding:3px; border-radius: 20px 10px;  };
+        
+        #imgEx{background-color: #00442d;};
+        
+        .container {width: 90%; margin: auto;}
+        
         th, td {
             border: 1px solid black;
             border-radius: 10px;
+            padding: 5px;
         }
         th {
-            background-color: #581845;
+            background-color: #43ce8d;
+            ;
             color: #FFFFFF;
             font-variant: small-caps;
+            padding: 5px;
         }
         td {
-            background-color: #DAF7A6;
+            background-color: #d1d4ca;
+            padding: 5px;
         }
         caption {
+            padding: 5px;
             text-align: center;
             font-size: 2em;
             margin-bottom: 0.5em;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
+        
         .informe {
-            margin-top: 2em;
-        }
-        .tabelasDeFormulas {
+            margin: auto;
             margin-top: 1em;
+            width: 30%; 
+            border-radius: 20px;
+            padding: 10px;
+            background-color: #c2ccb8;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;            
+            text-align: center;
+            
+        }
+
+      
+        .tabelasDeFormulas {
+            margin-top: 2em;
+            border-color: #979797;
+            background-color:#c2ccb8;
+            border-radius: 10px 20px;
+            padding: 40px;
         }
         .tabelaDeFormula {
             width: 100%;
             table-layout: fixed;
+            background-color: rgb(147, 179, 179);
+            padding: 20px;
+            border-radius: 20px 10px;
         }
         .tabelaInicialmenteEscondida {display: none;}
-        .celulaInput{text-align: center;}
-        td.dias {text-align: center; background-color: #581825; color: #FFFFFF; font-weight: bold;}
-        .ingrediente {width: 12em; font-weight: bold; background-color: #581825; color: #FFFFFF;}
+        .celulaInput{text-align: center; }
+        td.dias {text-align: center; background-color: #195027; color: #FFFFFF; font-weight: bold;}
+        .ingrediente {width: 12em; font-weight: bold; background-color: #00442d; color: #FFFFFF;}
         .celulaInvisivel {border: 0; background-color: transparent;}
         .valoresIngredientes {
+            
             text-align: center;
+        }
+
+        footer{background-color: #94ad7a;
+                width: 20%;
+                text-align: center;
+                align-items: center;
+                padding: 1px;
+                border-radius: 10px 20px;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                font-size: small;
+                margin: auto;
+                margin-top: 13px;
+
         }
 
         @media screen and (max-width: 1200px) {
@@ -1276,7 +1332,7 @@
 </head>
 <body>
     <div class="container">
-        <form>
+        <form id="tabela_select" > <img src="/icons/agriculture.png" width="38" height="38">
             Selecione o tipo de criação: 
             <select id="tabelas_f" onchange="selecionarTabela()">
                 <option value="corte_rapido" selected>Frangos de corte confinados</option>
@@ -1286,9 +1342,10 @@
             </select>
         </form>
 
-        <div class="informe">
+        <div class="informe">  <img src="/icons/alert.png" width="18" height="18" id="imgEx">
             <p>Informe a quantidade de milho disponível em quilos para qualquer uma das fases que o alpicativo calculará o resto:</p>
-        </div>
+            <img src="/icons/alert.png" width="18" height="18" id="imgEx">
+        </div> 
 
         <div class="tabelasDeFormulas">
             <!--------------------------------- ------------------------------------------------------------------------------->
@@ -1630,5 +1687,9 @@
 
         </div>
     </div>
+    <footer>
+        <p>Desenvolvido com ❤️ por: </p>
+        <p>  <a href="https://github.com/hmslima">Henrique </a> e <a href="https://github.com/slvgs"> Gabriella </a> - UNINTER </p>
+    </footer>
 </body>
 </html>
